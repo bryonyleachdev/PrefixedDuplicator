@@ -16,13 +16,14 @@ Eg. group-hover:,hover:,dark:,dark:group-hover:,dark:hover:
 </label>
 <br>
 <label>
-  <input type="radio" name="mode" value="intermingled" checked> Intermingled
+  <input type="radio" name="mode" value="intermingled"> Intermingled
 </label>
 <label>
-  <input type="radio" name="mode" value="batched"> Batched Results
+  <input type="radio" name="mode" value="batched" checked> Batched Results
 </label>
 <br><br>
 <button onclick="processLines()">Duplicate with Prefixes</button>
+<button id="copyBtn" onclick="copyOutput()" style="display:none;">Copy</button>
 <pre id="output"></pre>
 
 <script>
@@ -59,7 +60,24 @@ function processLines() {
     });
   }
 
-  document.getElementById("output").innerText = result.join("\n");
+  const outputEl = document.getElementById("output");
+  const copyBtn = document.getElementById("copyBtn");
+  outputEl.innerText = result.join("\n");
+
+  if (result.length > 0) {
+    copyBtn.style.display = "inline-block";
+    copyBtn.innerText = "Copy"; // reset button text when new output is generated
+  } else {
+    copyBtn.style.display = "none";
+  }
+}
+
+function copyOutput() {
+  const output = document.getElementById("output").innerText;
+  navigator.clipboard.writeText(output).then(() => {
+    const copyBtn = document.getElementById("copyBtn");
+    copyBtn.innerText = "Copied!";
+  });
 }
 </script>
 </body>
