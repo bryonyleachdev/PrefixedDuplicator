@@ -9,10 +9,17 @@
 <br>
 <input id="prefixes" type="text" placeholder="Prefix(es)">
 <br>
-Eg. hover:,group-hover:,dark:,dark:hover:,dark:group-hover:
+Eg. group-hover:,hover:,dark:,dark:group-hover:,dark:hover:
 <br>
 <label>
   <input type="checkbox" id="includeOriginal"> Include original text
+</label>
+<br>
+<label>
+  <input type="radio" name="mode" value="intermingled" checked> Intermingled
+</label>
+<label>
+  <input type="radio" name="mode" value="batched"> Batched Results
 </label>
 <br><br>
 <button onclick="processLines()">Duplicate with Prefixes</button>
@@ -28,13 +35,29 @@ function processLines() {
   const inputText = document.getElementById("input").value.trim();
   const lines = inputText.split("\n");
   const includeOriginal = document.getElementById("includeOriginal").checked;
+  const mode = document.querySelector('input[name="mode"]:checked').value;
 
-  const result = lines.flatMap(line => {
-    const clean = line.trim();
-    const withoutQuote = clean.substring(1); // remove leading "
-    const prefixed = prefixes.map(prefix => `"${prefix}${withoutQuote}`);
-    return includeOriginal ? [clean, ...prefixed] : prefixed;
-  });
+  let result = [];
+
+  if (mode === "intermingled") {
+    result = lines.flatMap(line => {
+      const clean = line.trim();
+      const withoutQuote = clean.substring(1); // remove leading "
+      const prefixed = prefixes.map(prefix => `"${prefix}${withoutQuote}`);
+      return includeOriginal ? [clean, ...prefixed] : prefixed;
+    });
+  } else if (mode === "batched") {
+    if (includeOriginal) {
+      result.push(...lines.map(line => line.trim()));
+    }
+    prefixes.forEach(prefix => {
+      result.push(...lines.map(line => {
+        const clean = line.trim();
+        const withoutQuote = clean.substring(1);
+        return `"${prefix}${withoutQuote}`;
+      }));
+    });
+  }
 
   document.getElementById("output").innerText = result.join("\n");
 }
