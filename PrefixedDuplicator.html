@@ -2,17 +2,36 @@
 <html>
 <head>
   <title>PrefixedDuplicator</title>
+  <style>
+    .input-wrapper {
+      display: inline-flex;
+      align-items: flex-end;
+    }
+    .clear-btn {
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      line-height: 0.5;
+    }
+  </style>
 </head>
 <body>
 <h4>PrefixedDuplicator</h4>
-<textarea id="input" rows="6" cols="30" placeholder="Type or paste lines here"></textarea>
+<div class="input-wrapper">
+  <textarea id="input" rows="6" cols="30" placeholder="Type or paste lines here"></textarea>
+  <button class="clear-btn" onclick="clearBox('input')">×</button>
+</div>
 <br>
-<input id="prefixes" type="text" placeholder="Prefix(es)">
+<div class="input-wrapper">
+  <input id="prefixes" type="text" placeholder="Prefix(es)">
+  <button class="clear-btn" onclick="clearBox('prefixes')">×</button>
+</div>
 <br>
 Eg. group-hover:,hover:,dark:,dark:group-hover:,dark:hover:
 <br>
 <label>
-  <input type="checkbox" id="includeOriginal"> Include original text
+  <input type="checkbox" id="includeOriginal" checked> Include original text
 </label>
 <br>
 <label>
@@ -78,6 +97,10 @@ function copyOutput() {
     const copyBtn = document.getElementById("copyBtn");
     copyBtn.innerText = "Copied!";
   });
+}
+
+function clearBox(id) {
+  document.getElementById(id).value = "";
 }
 </script>
 </body>
