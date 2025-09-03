@@ -7,32 +7,33 @@
 <h4>PrefixedDuplicator</h4>
 <textarea id="input" rows="6" cols="30" placeholder="Type or paste lines here"></textarea>
 <br>
-<input id="prefixes" type="text" placeholder="Comma-Separated Prefixes">
+<input id="prefixes" type="text" placeholder="Prefix(es)">
 <br>
 Eg. hover:,group-hover:,dark:,dark:hover:,dark:group-hover:
 <br>
-<br>
+<label>
+  <input type="checkbox" id="includeOriginal"> Include original text
+</label>
+<br><br>
 <button onclick="processLines()">Duplicate with Prefixes</button>
 <pre id="output"></pre>
 
 <script>
 function processLines() {
-  // get prefixes from input, split by comma, and trim each
   const prefixes = document.getElementById("prefixes").value
                     .split(",")
                     .map(p => p.trim())
-                    .filter(p => p.length > 0); // remove empty entries
+                    .filter(p => p.length > 0);
 
   const inputText = document.getElementById("input").value.trim();
   const lines = inputText.split("\n");
+  const includeOriginal = document.getElementById("includeOriginal").checked;
 
   const result = lines.flatMap(line => {
     const clean = line.trim();
     const withoutQuote = clean.substring(1); // remove leading "
-    return [
-      clean,
-      ...prefixes.map(prefix => `"${prefix}${withoutQuote}`)
-    ];
+    const prefixed = prefixes.map(prefix => `"${prefix}${withoutQuote}`);
+    return includeOriginal ? [clean, ...prefixed] : prefixed;
   });
 
   document.getElementById("output").innerText = result.join("\n");
