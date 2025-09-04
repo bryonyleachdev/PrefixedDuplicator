@@ -9,7 +9,7 @@
 
     textarea, 
     #prefixes {
-      width: 580px;
+      width: 670px;
       box-sizing: border-box;
     }
     .input-wrapper {
@@ -20,7 +20,7 @@
       cursor: pointer;
       border: none;
       background: transparent;
-      font-size: 18px;
+      font-size: 24px;
       line-height: 0.5;
     }
   </style>
@@ -37,10 +37,12 @@
   <button class="clear-btn" onclick="clearBox('prefixes')">×</button>
 </div>
 <br>
-Eg. group-hover:,hover:,dark:,dark:group-hover:,dark:hover:,<br>
-sm:group-hover:,sm:hover:,sm:dark:,sm:dark:group-hover:,sm:dark:hover:,<br>
-md:group-hover:,md:hover:,md:dark:,md:dark:group-hover:,md:dark:hover:,<br>
-lg:group-hover:,lg:hover:,lg:dark:,lg:dark:group-hover:,lg:dark:hover:
+Eg. max-sm:,sm:,max-md:,md:,max-lg:,lg,max-xl:,xl:,max-2xl:,2xl:,group-hover:,hover:,<br>
+sm:group-hover:,sm:hover:,md:group-hover:,md:hover:,lg:group-hover:,lg:hover:,<br>
+dark:,dark:group-hover:,dark:hover:,sm:dark:,sm:dark:group-hover:,sm:dark:hover:,<br>
+md:dark:,md:dark:group-hover:,md:dark:hover:,lg:dark:,lg:dark:group-hover:,<br>
+lg:dark:hover:
+
 <br><br>
 <label>
   <input type="checkbox" id="includeOriginal" checked> Include original text
@@ -75,18 +77,21 @@ function processLines() {
     result = lines.flatMap(line => {
       const clean = line.trim();
       const withoutQuote = clean.substring(1); // remove leading "
-      const prefixed = prefixes.map(prefix => `"${prefix}${withoutQuote}`);
-      return includeOriginal ? [clean, ...prefixed] : prefixed;
+      const prefixed = prefixes.map(prefix => `        "${prefix}${withoutQuote}`);
+      return includeOriginal ? [`        ${clean}`, ...prefixed] : prefixed;
     });
   } else if (mode === "batched") {
     if (includeOriginal) {
-      result.push(...lines.map(line => line.trim()));
+      result.push(...lines.map(line => {
+        const clean = line.trim();
+        return `        ${clean}`;
+      }));
     }
     prefixes.forEach(prefix => {
       result.push(...lines.map(line => {
         const clean = line.trim();
         const withoutQuote = clean.substring(1);
-        return `"${prefix}${withoutQuote}`;
+        return `        "${prefix}${withoutQuote}`;
       }));
     });
   }
