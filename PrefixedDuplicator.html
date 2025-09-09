@@ -44,8 +44,21 @@ md:dark:,md:dark:group-hover:,md:dark:hover:,lg:dark:,lg:dark:group-hover:,<br>
 lg:dark:hover:
 
 <br><br>
+<div class="input-wrapper">
+  <input id="findText" type="text" placeholder="Find">
+  <button class="clear-btn" onclick="clearBox('findText')">×</button>
+</div>
+<div class="input-wrapper">
+  <input id="replaceText" type="text" placeholder="Replace">
+  <button class="clear-btn" onclick="clearBox('replaceText')">×</button>
+</div>
+<br>
 <label>
   <input type="checkbox" id="includeOriginal" checked> Include original text
+</label>
+<br>
+<label>
+  <input type="checkbox" id="includeIndent" checked> Include indentation
 </label>
 <br>
 <label>
@@ -66,32 +79,43 @@ function processLines() {
                     .map(p => p.trim())
                     .filter(p => p.length > 0);
 
-  const inputText = document.getElementById("input").value.trim();
+  let inputText = document.getElementById("input").value.trim();
+  const findValue = document.getElementById("findText").value;
+  const replaceValue = document.getElementById("replaceText").value;
+
+  // Run find/replace if "find" has content
+  if (findValue) {
+    const regex = new RegExp(findValue, "g"); // global replace
+    inputText = inputText.replace(regex, replaceValue);
+  }
+
   const lines = inputText.split("\n");
   const includeOriginal = document.getElementById("includeOriginal").checked;
+  const includeIndent = document.getElementById("includeIndent").checked;
   const mode = document.querySelector('input[name="mode"]:checked').value;
 
+  const indent = includeIndent ? "        " : "";
   let result = [];
 
   if (mode === "interleafed") {
     result = lines.flatMap(line => {
       const clean = line.trim();
-      const withoutQuote = clean.substring(1); // remove leading "
-      const prefixed = prefixes.map(prefix => `        "${prefix}${withoutQuote}`);
-      return includeOriginal ? [`        ${clean}`, ...prefixed] : prefixed;
+      const withoutQuote = clean.substring(1);
+      const prefixed = prefixes.map(prefix => `${indent}"${prefix}${withoutQuote}`);
+      return includeOriginal ? [`${indent}${clean}`, ...prefixed] : prefixed;
     });
   } else if (mode === "batched") {
     if (includeOriginal) {
       result.push(...lines.map(line => {
         const clean = line.trim();
-        return `        ${clean}`;
+        return `${indent}${clean}`;
       }));
     }
     prefixes.forEach(prefix => {
       result.push(...lines.map(line => {
         const clean = line.trim();
         const withoutQuote = clean.substring(1);
-        return `        "${prefix}${withoutQuote}`;
+        return `${indent}"${prefix}${withoutQuote}`;
       }));
     });
   }
@@ -102,7 +126,7 @@ function processLines() {
 
   if (result.length > 0) {
     copyBtn.style.display = "inline-block";
-    copyBtn.innerText = "Copy"; // reset button text when new output is generated
+    copyBtn.innerText = "Copy";
   } else {
     copyBtn.style.display = "none";
   }
