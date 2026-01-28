@@ -1,4 +1,4 @@
-The PrefixedDuplicator takes a list of text lines and duplicates each line with one or more prefixes, 
+The PrefixedDuplicator takes a list of text lines and duplicates each line with one or more prefixes, <br>
 with optional find/replace and formatting controls.
 
 Typically used for generating many prefixed variants of quoted strings, such as utility class names or configuration entries.
@@ -15,25 +15,22 @@ Find / Replace: optional text substitution before duplication.
 Include original text toggle: keeps the unmodified lines in the output.
 
 Include indentation toggle: adds fixed leading spaces to each output line.
-
+<br><br><br>
 Modes:
 
 Interleafed: original line followed immediately by its prefixed versions.
 
 Batched Results: all originals first, then prefixed lines grouped by prefix.
-<br><br>
-
+<br><br><br>
 Output: results are shown in the output area.
 
 Copy button: copies the output to the clipboard.
 
 Clear buttons: empty individual input fields.
-
-<br><br><br>
-
+<br><br><br><br>
 Processing behavior:
 
-Each line is trimmed (leading and trailing spaces removed).
+Each line is trimmed of leading and trailing spaces.
 
 The first character of each line is removed before prefixing (assumes a leading quote).
 
